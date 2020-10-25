@@ -1,6 +1,6 @@
-# IdentityServer4 QuickStarts
+## IdentityServer4 QuickStarts
 
 |Example|Contents|
 |:--|:--|
-|1_ClientCredentials| クライアントクリデンシャルフロー(トークンエンドポイントにClient IDとクライアントシークレットを渡して直接IDトークンを取得する方式)でIDトークンを取得し、APIサーバにアクセスするサンプル|
-
+|1_ClientCredentials| 非インタラクティブクライアント用サンプル(クライアントクリデンシャルフロー)|
+|2_InteractiveAspNetCore|インタラクティブクライアント用サンプル(認可コードフロー + PKCE)|
