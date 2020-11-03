@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  #identityserver:
+  #  container_name: id4
+  #  environment:
+  #    - "ASPNETCORE_ENVIRONMENT=Development"
+  #    - "ASPNETCORE_URLS=https://*:5101;http://*:5100"
+  sqldb:
+    container_name: sqldb
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - "ACCEPT_EULA=Y"
+      - "SA_PASSWORD=Password0!"
+      - "MSSQL_PID=Express"
+      - "MSSQL_COLLATION=Japanese_BIN2"
