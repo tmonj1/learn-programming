@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Cognitoサインアップ</title>
+  <!--上記で記載していたライブラリを読み込む（S3にアップした名前をsrc=""に入れる）//-->
+  <!-- aws sdk //-->
+  <script src="js/aws-sdk.min.js"></script>
+  <!-- aws cognito sdk//-->
+  <script src="js/jsbn.js"></script>
+  <script src="js/jsbn2.js"></script>
+  <script src="js/sjcl.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/aws-cognito-sdk.min.js"></script>
+  <script src="js/amazon-cognito-identity.min.js"></script>
+  <!-- jquery //-->
+  <script src="js/jquery-3.1.1.min.js"></script>
+  <script src="js/info/submit_info.js"></script>
+  <!--上記で記載していたライブラリを読み込む（S3にアップした名前をsrc=""に入れた） //-->
+
+  <!-- bootstrap3 //-->
+  <!-- bootstrap3（以下3行）は画面の装飾なので使わなくてもサインアップ出来ます //-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+    integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+    integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+    integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="container">
+    <form class="form-signin">
+      <h2 class="form-signin-heading">サインアップ</h2>
+      <div id="message" class="alert" style="display:none;"></div>
+      <label for="inputUsername" class="sr-only">ユーザー名</label>
+      <input type="text" id="inputUsername" class="form-control" placeholder="User name" required autofocus>
+      <label for="inputPassword" class="sr-only">パスワード</label>
+      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+      <br />
+      <input type="button" class="btn btn-lg btn-primary btn-bloc" id="user_add_btn" value="ユーザーを作成する">
+    </form>
+  </div>
+
+  <script>
+    $('#user_add_btn').click(function () {
+      //画面上の入力値であるメールアドレス＋パスワードを代入する
+      username = $("#inputUsername").val();
+      password = $("#inputPassword").val();
+      if (!username || !password) {
+        return false;
+      }
+      userPool.signUp(username, password, attributeList, null, function (err, result) {
+        if (err) {
+          console.log(err);
+          message_text = err;
+          message_class = "alert-danger";
+        } else {
+          cognitoUser = result.user;
+          console.log('user name is ' + cognitoUser.getUsername());
+          message_text = cognitoUser.getUsername() + "が作成されました";
+          message_class = "alert-success";
+        }
+        $("#message").text(message_text);
+        $("#message").addClass(message_class);
+        $('#message').show();
+        //setTimeoutはmessage表記後フェードアウトする関数なのでmustではない
+        setTimeout(function () {
+          $('#message').fadeOut();
+          $("#message").removeClass(message_class);
+        }, 5000);
+      });
+    });
+  </script>
+</body>
+
+</html>

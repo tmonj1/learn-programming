@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sign In</title>
+  <!-- aws sdk //-->
+  <!-- aws sdk //-->
+  <script src="js/aws-sdk.min.js"></script>
+  <!-- aws cognito sdk//-->
+  <script src="js/jsbn.js"></script>
+  <script src="js/jsbn2.js"></script>
+  <script src="js/sjcl.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/aws-cognito-sdk.min.js"></script>
+  <script src="js/amazon-cognito-identity.min.js"></script>
+  <!-- jquery //-->
+  <script src="js/jquery-3.1.1.min.js"></script>
+  <script src="js/info/login_mail.js"></script>
+  <!--上記で記載していたライブラリを読み込む（S3にアップした名前をsrc=""に入れる）//-->
+  <!-- bootstrap3 //-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+    integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+    integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+    integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+    crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div id="signin">
+      <h1>Sign In</h1>
+      <div id="message"><span style="color: red;"></span></div>
+      <form name="form-signin">
+        <span style="display: inline-block; width: 150px;">Email Address</span>
+        <input type="text" id="email" class="form-control" placeholder="Email Address">
+        <span style="display: inline-block; width: 150px;">Password</span>
+        <input type="password" id="password" class="form-control" placeholder="Password">
+        <br /><br />
+        <input type="button" class="btn btn-lg btn-primary btn-bloc" id="signinButton" value="Sign In">
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 「Sign In」ボタン押下時
+    $("#signinButton").click(function (event) {
+      signIn();
+    });
+    /**
+     * サインイン処理
+     */
+    var signIn = function () {
+      var email = $('#email').val();
+      var password = $('#password').val();
+
+      // 何か1つでも未入力の項目がある場合、メッセージを表示して処理を中断
+      if (!email | !password) {
+        $("#signin div#message span").empty();
+        $("#signin div#message span").append("All fields are required.");
+        return false;
+      }
+
+      // 認証データの作成
+      var authenticationData = {
+        Username: email,
+        Password: password
+      };
+      var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+
+      var userData = {
+        Username: email,
+        Pool: userPool
+      };
+      var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+      // 認証処理
+      cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+          var idToken = result.getIdToken().getJwtToken();          // IDトークン
+          var accessToken = result.getAccessToken().getJwtToken();  // アクセストークン
+          var refreshToken = result.getRefreshToken().getToken();   // 更新トークン
+
+          alert("idToken : " + idToken);
+          alert("accessToken : " + accessToken);
+          alert("refreshToken : " + refreshToken);
+
+          // サインイン成功の場合、次の画面へ遷移
+          console.log('成功');
+        },
+
+        onFailure: function (err) {
+          // サインイン失敗の場合、エラーメッセージを画面に表示
+          console.log(err);
+          $("div#message span").empty();
+          $("div#message span").append(err.message);
+        }
+      });
+    };
+  </script>
+</body>
+
+</html>

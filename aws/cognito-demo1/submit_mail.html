@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Cognitoサインアップ</title>
+  <!--上記で記載していたライブラリを読み込む（S3にアップした名前をsrc=""に入れる）//-->
+  <!-- aws sdk //-->
+  <script src="js/aws-sdk.min.js"></script>
+  <!-- aws cognito sdk//-->
+  <script src="js/jsbn.js"></script>
+  <script src="js/jsbn2.js"></script>
+  <script src="js/sjcl.js"></script>
+  <script src="js/moment.js"></script>
+  <script src="js/aws-cognito-sdk.min.js"></script>
+  <script src="js/amazon-cognito-identity.min.js"></script>
+
+  <!-- jquery //-->
+  <script src="js/jquery-3.1.1.min.js"></script>
+
+  <script src="js/info/submit_mail.js"></script>
+
+  <!--上記で記載していたライブラリを読み込む（S3にアップした名前をsrc=""に入れた） //-->
+
+  <!-- bootstrap3 //-->
+  <!-- bootstrap3（以下3行）は画面の装飾なので使わなくてもサインアップ出来ます //-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+    integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+    integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+    integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <div class="container">
+    <form name="form-signup">
+      <h1>Sign Up</h1>
+      <div id="message" class="alert" style="display:none;"></div>
+      <span style="display: inline-block; width: 150px;">User ID(Email)</span>
+      <input type="text" id="email" class="form-control" placeholder="Email Address">
+      <span style="display: inline-block; width: 150px;">Last Name</span>
+      <input type="text" id="lastName" class="form-control" placeholder="Last Name">
+      <span style="display: inline-block; width: 150px;">First Name</span>
+      <input type="text" id="firstName" class="form-control" placeholder="First Name">
+      <span style="display: inline-block; width: 150px;">Password</span>
+      <input type="password" id="password" class="form-control" placeholder="Password">
+      <br>
+      <input type="button" class="btn btn-lg btn-primary btn-bloc" id="createAccount" value="Create Account">
+    </form>
+
+  </div>
+
+  <script>
+
+    // Create Accountボタン押下時
+    $("#createAccount").click(function (event) {
+      signUp();
+    });
+
+    let signUp = () => {
+      let username = $("#email").val();
+      let lastName = $("#lastName").val();
+      let firstName = $("#firstName").val();
+      let password = $("#password").val();
+
+      // 何か1つでも未入力の項目がある場合、処理終了
+      if (!username | !lastName | !firstName | !password) {
+        return false;
+      }
+
+      // ユーザ属性リストの生成
+      let dataFamilyName = {
+        Name: "family_name",
+        Value: lastName
+      }
+      let dataGivenName = {
+        Name: "given_name",
+        Value: firstName
+      }
+      let attributeFamilyName = new AmazonCognitoIdentity.CognitoUserAttribute(dataFamilyName);
+      let attributeGivenName = new AmazonCognitoIdentity.CognitoUserAttribute(dataGivenName);
+
+      attributeList.push(attributeFamilyName);
+      attributeList.push(attributeGivenName);
+
+      // サインアップ処理
+      userPool.signUp(username, password, attributeList, null, function (err, result) {
+        if (err) {
+          alert(err);
+          return;
+        } else {
+          alert("ボタンおしたよ");
+          // サインアップ成功の場合、アクティベーション画面に遷移する
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
